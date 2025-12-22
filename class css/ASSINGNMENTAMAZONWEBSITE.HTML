@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Clone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- 1. BASIC RESET --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #e3e6e6; /* Light Grey Background */
+            padding-bottom: 50px;
+        }
+
+        /* --- 2. HEADER SECTION (Dark Blue) --- */
+        .header {
+            background-color: #131921; /* Amazon Dark Blue */
+            padding: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .menu-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .hamburger {
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .amazon-logo {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: -1px;
+            margin-top: 5px;
+        }
+        .amazon-logo span { color: #febd69; } /* The smile color */
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .cart-icon {
+            font-size: 24px;
+            position: relative;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -5px;
+            background: #f08804;
+            color: white;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        /* Search Bar */
+        .search-container {
+            display: flex;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .search-btn {
+            background-color: #febd69; /* Amazon Yellow */
+            border: none;
+            padding: 0 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- 3. SUB-HEADER (Location) --- */
+        .location-bar {
+            background-color: #232f3e; /* Lighter Blue */
+            color: white;
+            padding: 10px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- 4. CATEGORIES SCROLL --- */
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            background: white;
+            padding: 10px;
+            scrollbar-width: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .categories::-webkit-scrollbar { display: none; }
+
+        .cat-item {
+            min-width: 80px;
+            text-align: center;
+            font-size: 12px;
+            margin-right: 10px;
+            color: #333;
+        }
+        .cat-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+
+        /* --- 5. HERO BANNER --- */
+        .hero-banner {
+            width: 100%;
+            height: 180px;
+            position: relative;
+            background: url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80') center/cover no-repeat;
+        }
+        
+        /* Gradient fade effect at bottom of banner */
+        .hero-banner::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(to bottom, transparent, #e3e6e6);
+        }
+
+        /* --- 6. PRODUCT GRID --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 15px;
+            padding: 15px;
+            margin-top: -40px; /* Overlap banner effect */
+            position: relative;
+            z-index: 10;
+        }
+
+        .product-card {
+            background: white;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .p-img {
+            width: 100%;
+            height: 160px;
+            object-fit: contain; /* Amazon style: Contain image */
+            margin-bottom: 10px;
+        }
+
+        .p-title {
+            font-size: 14px;
+            color: #0F1111;
+            line-height: 1.3;
+            margin-bottom: 5px;
+            height: 38px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .rating {
+            font-size: 12px;
+            color: #ffa41c; /* Star color */
+            margin-bottom: 5px;
+        }
+        .rating span { color: #007185; margin-left: 5px; } /* Count color */
+
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+
+        .symbol { font-size: 12px; vertical-align: top; }
+        .price-main { font-size: 21px; font-weight: 500; }
+        .price-dec { font-size: 12px; vertical-align: top; }
+
+        .prime-badge {
+            font-size: 12px;
+            font-weight: bold;
+            color: #00a8e1; /* Prime Blue */
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .prime-badge i { color: #f90; margin-left: 2px; } /* Checkmark */
+
+        .add-btn {
+            background-color: #ffd814; /* Amazon Button Yellow */
+            border: none;
+            padding: 8px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .add-btn:hover { background-color: #f7ca00; }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="nav-top">
+            <div class="menu-logo">
+                <i class="fa-solid fa-bars hamburger"></i>
+                <div class="amazon-logo">amazon<span>.in</span></div>
+            </div>
+            <div class="nav-right">
+                <span>Sign in <i class="fa-solid fa-user"></i></span>
+                <div class="cart-icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-count">2</span>
+                </div>
+            </div>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search Amazon.in">
+            <button class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    </header>
+
+    <div class="location-bar">
+        <i class="fa-solid fa-location-dot"></i>
+        Deliver to <strong>New Delhi 110001</strong>
+    </div>
+
+    <div class="categories">
+        <div class="cat-item">
+            <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff70?w=100" class="cat-img"><br>Mobiles
+        </div>
+        <div class="cat-item">
+            <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=100" class="cat-img"><br>Fashion
+        </div>
+        <div class="cat-item">
+            <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=100" class="cat-img"><br>Electronics
+        </div>
+        <div class="cat-item">
+            <img src="https://images.unsplash.com/photo-1584669215886-2a71f005b829?w=100" class="cat-img"><br>Home
+        </div>
+        <div class="cat-item">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100" class="cat-img"><br>Watches
+        </div>
+        <div class="cat-item">
+            <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=100" class="cat-img"><br>Laptops
+        </div>
+    </div>
+
+    <div class="hero-banner"></div>
+
+    <div class="product-grid">
+
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80" class="p-img">
+            <div class="p-title">Sony Wireless Noise Cancelling Headphones</div>
+            <div class="rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star-half-stroke"></i>
+                <span>(1,240)</span>
+            </div>
+            <div class="price-row">
+                <span class="symbol">₹</span>
+                <span class="price-main">14,990</span>
+            </div>
+            <div class="prime-badge">✔ prime</div>
+            <button class="add-btn">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80" class="p-img">
+            <div class="p-title">Apple iPhone 13 (128GB) - Midnight</div>
+            <div class="rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <span>(54,000)</span>
+            </div>
+            <div class="price-row">
+                <span class="symbol">₹</span>
+                <span class="price-main">52,999</span>
+            </div>
+            <div class="prime-badge">✔ prime</div>
+            <button class="add-btn">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=400&q=80" class="p-img">
+            <div class="p-title">Fossil Gen 6 Smartwatch Black</div>
+            <div class="rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                <span>(850)</span>
+            </div>
+            <div class="price-row">
+                <span class="symbol">₹</span>
+                <span class="price-main">18,495</span>
+            </div>
+            <div class="prime-badge">✔ prime</div>
+            <button class="add-btn">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80" class="p-img">
+            <div class="p-title">Nike Air Max Men's Running Shoes</div>
+            <div class="rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <span>(2,100)</span>
+            </div>
+            <div class="price-row">
+                <span class="symbol">₹</span>
+                <span class="price-main">8,295</span>
+            </div>
+            <div class="prime-badge">✔ prime</div>
+            <button class="add-btn">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80" class="p-img">
+            <div class="p-title">Apple MacBook Air M1 Chip 13-inch</div>
+            <div class="rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <span>(5,600)</span>
+            </div>
+            <div class="price-row">
+                <span class="symbol">₹</span>
+                <span class="price-main">74,900</span>
+            </div>
+            <div class="prime-badge">✔ prime</div>
+            <button class="add-btn">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=80" class="p-img">
+            <div class="p-title">Canon EOS 1500D DSLR Camera</div>
+            <div class="rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                <span>(9,800)</span>
+            </div>
+            <div class="price-row">
+                <span class="symbol">₹</span>
+                <span class="price-main">35,990</span>
+            </div>
+            <div class="prime-badge">✔ prime</div>
+            <button class="add-btn">Add to Cart</button>
+        </div>
+
+    </div>
+
+</body>
+</html>
